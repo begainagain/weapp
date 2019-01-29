@@ -5,24 +5,39 @@ const mysql = require('../../tools/sql');
 
 
 
-function getJoke(url,stockCode,market) {
+function getJoke(url,stockCode,market,code) {
   return new Promise((reslove, reject) => {
-      console.log("111111111111111111111111111")
-      var MyDate = new Date()
-    var sendinfo={                          
-        //设置要请求的参数
-        "header":{
-            "action":"S070",
-            "code":"0",
-            "devicetype":"0",
-            "msgtype":0,
-            "sendingtime":MyDate.toLocaleString()+"."+MyDate.getMilliseconds(),
-            "version":"1.0.01"
-                        
+    console.log("111111111111111111111111111")
+    var MyDate = new Date()
+    var sendinfo = {}
+    if(code==0){
+      sendinfo={                          
+      //设置要请求的参数
+      "header":{
+          "action":"S070",
+          "code":"0",
+          "devicetype":"0",
+          "msgtype":0,
+          "sendingtime":MyDate.toLocaleString()+"."+MyDate.getMilliseconds(),
+          "version":"1.0.01"
         },
-            "stockCode":stockCode,
-            "market":market
+        "stockCode":stockCode,
+        "market":market
+      }
+    }else if(code==1){
+      var sendinfo={
+        "header" : { 
+          "action" : "S072", 
+          "code" : "0", 
+          "devicetype" : "1", 
+          "msgtype" : 0, 
+          "sendingtime" : "2016-09-26 14:46:06.090", 
+          "version" : "1.0.1"
+        },
+        "stockCode":stockCode+"."+market
+      }
     }
+    
     console.log(sendinfo)
     var sendData = JSON.stringify(sendinfo);   //对参数编号处理
       let options = {
@@ -38,7 +53,7 @@ function getJoke(url,stockCode,market) {
     let req = http.request(options, res => {
       res.setEncoding('utf-8');
       let urlData = ''
-      res.on('data', data=>{
+      res.on('data', data=>{ 
         urlData += data
         // urlData = data
       })
@@ -60,6 +75,37 @@ function getJoke(url,stockCode,market) {
     req.write(sendData);
     req.end();
   })
+}
+
+function get_emotion(emotion){
+  if(emotion==0){
+    let motion=""
+    for(var i=0;i<5;i++){
+      motion+="😑"
+      console.log("ssssssss")
+    }
+    return motion
+  }else if(emotion>0){
+    let motion=""
+    for(var i=0;i<emotion;i++){
+      motion+="😊"
+    }
+    for(var i =0;i<5-emotion;i++){
+      motion+="😑"
+    }
+    return motion
+  }else if(emotion<0){
+      let motion=""
+    for(var i=0;i<-emotion;i++){
+      motion+="😟"
+      console.log("ssssssss")
+    }
+    for(var n=0;n<5+emotion;n++){
+      motion+="😑"
+      console.log("ssssssss")
+    }
+    return motion
+  }
 }
 
 
@@ -90,8 +136,55 @@ module.exports = {
         // console.log('11111111111111111111111111111111111',date)
 
         let url = '47.96.107.128'
-        var bookinfo =await getJoke(url,stockCode,market)
+        var bookinfo =await getJoke(url,stockCode,market,0)
+        var personinfo = await getJoke(url,stockCode,market,1)
+        var stockMarket = await getJoke(url,399300,'SZ',1)
+
         var ss = JSON.parse(bookinfo)
+        var aa = JSON.parse(personinfo)
+        var stock_market  = JSON.parse(stockMarket)
+        // console.log("aaaaaaaaaaaaaaaaaaaaaaaa",aa)
+        // console.log("ssssssssssssssssssssssss",ss.result)
+        var qq = JSON.parse(JSON.stringify(ss.result))
+        console.log(typeof qq)  
+        console.log(aa)
+
+        var emotion = aa.result.emotion
+
+        var stock_emotion = stock_market.result.emotion
+
+        var emotion =  get_emotion(emotion)
+
+        var stock_emotion = get_emotion(stock_emotion)
+
+        // if(emotion==0){
+        //   emotion=""
+        //   for(var i=0;i<5;i++){
+        //     emotion.append(":|")
+        //   }
+        // }else if(emotion>0){
+        //   emotion=""
+        //   for(var i=0;i<emotion;i++){
+        //     emotion.append(":)")
+        //   }
+        //   for(var i =0;i<5-emotion;i++){
+        //     emotion.append(":|")
+        //   }
+        // }else if(emotion<0){
+        //   emotion=""
+        //   for(var i=0;i<-emotion;i++){
+        //     emotion.append(":(")
+        //   }
+        //   for(var i =0;i<5+emotion;i++){
+        //     emotion.append(":|")
+        //   }
+        // }
+
+        ss.result["emotion"]=emotion
+        ss.result["stock_emotion"]=stock_emotion
+        // delete ss[result.buyCount];
+        console.log(ss)
+        // delete 
         // var content_test = "{\"stock_name\":"+"\""+ss.result.stock_name+"\","+"\"stock_code\":"+"\""+
         // ss.result.stock_code+"\","+"\"market\":"+"\""+market+"\"}"
 

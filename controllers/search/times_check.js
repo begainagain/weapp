@@ -45,7 +45,7 @@ module.exports = {
         if(test_times>0){
             await mysql.insertGroup_record([user[0].user_id,user[0].user_name,user[0].groups,content_test,"test",new Date(),date,user[0].head_img])
             await mysql.updateUserWithTimes([user[0].times-1,user[0].user_id])
-            await mysql.reduceGroups_test(["%"+user[0].user_id+"%"])
+            await mysql.reduceGroups_test([user[0].user_id])
             ctx.body={
                 code:0,
                 msg:'用户测股次数不为零，可以测股'

@@ -52,7 +52,7 @@ module.exports =  {
 
     if(crea.length==0){//如果用户没有创建过群组
         group_name = create[0].user_name
-        await userModer.insertGroups([group_name,create_times+invited_times,4,member,create_num])
+        await userModer.insertGroups([group_name,4-create_times+invited_times,4,member,create_num])
         
         ctx.body={
             code:0,
@@ -120,7 +120,7 @@ module.exports =  {
         
     }
 
-    await userModer.updateGroups([test+invited_times,test_all+2,member,crea[0].group_id]).then(result=>{
+    await userModer.updateGroups([test+2-invited_times,test_all+2,member,crea[0].group_id]).then(result=>{
         ctx.body={
             code:0,
             msg:'成功邀请用户进群'

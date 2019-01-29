@@ -103,7 +103,7 @@ let selectRecordsWithContent = function ( values ){
 
 let selectRecords_test = function ( values ){
   // let _sql = "select * FROM group_record WHERE group_id like ? and ((content_type='test' and dates=?) or content_type='normal') ORDER BY content_time DESC LIMIT 20"
-  let _sql = "select * FROM group_record WHERE group_id like ? and dates=? ORDER BY content_time DESC LIMIT 20"
+  let _sql = "select * FROM group_record WHERE group_id like ? and dates=? ORDER BY content_time ASC LIMIT 20"
   // let data = await query(_sql)
   return query(_sql,values) 
 }
@@ -168,7 +168,7 @@ let updateGroups_Name = function( values ) {
 }
 
 let reduceGroups_test = function(value){
-  let _sql = 'update groups a set a.test=a.test-1 where member like ?'
+  let _sql = 'update groups a set a.test=a.test+1 where find_in_set(?,member); '
   return query(_sql, value)
 }
 
