@@ -5,7 +5,7 @@ const mysql = require('../../tools/sql');
 
 
   
-function getJoke(url,account_id) {
+function getJoke(url,account_id) {//走势图
   return new Promise((reslove, reject) => { 
       // console.log("111111111111111111111111111")
     var sendinfo={                          
@@ -70,7 +70,7 @@ module.exports = {
     post: async ctx => {
         let account_id = ctx.request.body.account_id
 
-        let url = '47.96.107.128'
+        let url = 'api.rrjiaoyi.com'
         console.log(1111111111)
         var bookinfo =await getJoke(url,account_id)
         // console.log(typeof sss+"22222222222222222222222222222222222222222222222")

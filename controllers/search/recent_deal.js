@@ -1,6 +1,6 @@
 var http = require('http');
 
-function getJoke(url,stockCode,market) {
+function getJoke(url,stockCode,market) {//最近交易
   return new Promise((reslove, reject) => {
       // console.log("111111111111111111111111111")
       var MyDate = new Date()
@@ -71,7 +71,7 @@ module.exports = {
         let stockCode = ctx.request.body.stockCode
         let market = ctx.request.body.market
 
-        let url = '47.96.107.128'
+        let url = 'api.rrjiaoyi.com'
         console.log(1111111111)
         var bookinfo =await getJoke(url,stockCode,market)
         // console.log(typeof sss+"22222222222222222222222222222222222222222222222")

@@ -86,7 +86,7 @@ module.exports = {
         var date = year+"-"+month+"-"+day
         console.log(date)
 
-        let url = '47.96.107.128'
+        let url = 'api.rrjiaoyi.com'
         var bookinfo =await getJoke(url,stockCode,market)
         var ss = JSON.parse(bookinfo)
         var content_test = "{\"stock_name\":"+"\""+ss.result.stock_name+"\","+"\"stock_code\":"+"\""+

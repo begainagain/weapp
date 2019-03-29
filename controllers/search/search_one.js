@@ -135,7 +135,7 @@ module.exports = {
         // var date = year+"-"+month+"-"+day
         // console.log('11111111111111111111111111111111111',date)
 
-        let url = '47.96.107.128'
+        let url = 'api.rrjiaoyi.com'
         var bookinfo =await getJoke(url,stockCode,market,0)
         var personinfo = await getJoke(url,stockCode,market,1)
         var stockMarket = await getJoke(url,399300,'SZ',1)
@@ -153,9 +153,9 @@ module.exports = {
 
         var stock_emotion = stock_market.result.emotion
 
-        var emotion =  get_emotion(emotion)
+        // var emotion =  get_emotion(emotion)
 
-        var stock_emotion = get_emotion(stock_emotion)
+        // var stock_emotion = get_emotion(stock_emotion)
 
         // if(emotion==0){
         //   emotion=""
@@ -182,6 +182,8 @@ module.exports = {
 
         ss.result["emotion"]=emotion
         ss.result["stock_emotion"]=stock_emotion
+
+        
         // delete ss[result.buyCount];
         console.log(ss)
         // delete 
