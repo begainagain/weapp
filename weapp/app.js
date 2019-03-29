@@ -11,9 +11,13 @@ app.use(response)
 // 解析请求体
 app.use(bodyParser())
 
-// 引入路由分发
-const router = require('./routes')
-app.use(router.routes())
+// // 引入路由分发
+// const router = require('./routes')
+// app.use(router.routes())
+
+const registerRouter  = require('./routes')
+
+app.use(registerRouter())
 
 // 启动程序，监听端口
 app.listen(config.port, () => debug(`listening on port ${config.port}`))

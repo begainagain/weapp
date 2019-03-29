@@ -66,7 +66,7 @@ module.exports = {
     post: async ctx => {
         let keyword = ctx.request.body.keyword
 
-        let url = '47.96.107.128'
+        let url = 'api.rrjiaoyi.com'
         var bookinfo =await getJoke(url,keyword)
         var MyDate = new Date()
         

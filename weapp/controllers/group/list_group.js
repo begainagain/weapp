@@ -11,11 +11,13 @@ module.exports =  {
 
     var user = await userModer.selectFromOpenId(openid)
     var groups = user[0].groups.split(",")
+    console.log(groups)
 
     var have_group = false
     var group = []
     for(var i=0;i<groups.length;i++){
         var group_one = await userModer.selectGroupWithId(groups[i])
+        console.log(groups)
         group[i]=group_one[0]
         if(group_one[0].create_userid==user[0].user_id){
             have_group=group_one[0].group_id

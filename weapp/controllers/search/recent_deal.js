@@ -1,13 +1,9 @@
-var querystring = require('querystring')
 var http = require('http');
-const request = require('superagent');
-const mysql = require('../../tools/sql');
 
-
-
-function getJoke(url,stockCode,market) {
+function getJoke(url,stockCode,market) {//最近交易
   return new Promise((reslove, reject) => {
       // console.log("111111111111111111111111111")
+      var MyDate = new Date()
     var sendinfo={                          
         //设置要请求的参数
         "header":{
@@ -15,7 +11,7 @@ function getJoke(url,stockCode,market) {
             "code":"0",
             "devicetype":"0",
             "msgtype":0,
-            "sendingtime":"2016-10-13 09:23:37.761",
+            "sendingtime":MyDate.toLocaleString()+"."+MyDate.getMilliseconds(),
             "version":"1.0.01",
             "page":{
                 "index":1,
@@ -75,7 +71,7 @@ module.exports = {
         let stockCode = ctx.request.body.stockCode
         let market = ctx.request.body.market
 
-        let url = '47.96.107.128'
+        let url = 'api.rrjiaoyi.com'
         console.log(1111111111)
         var bookinfo =await getJoke(url,stockCode,market)
         // console.log(typeof sss+"22222222222222222222222222222222222222222222222")

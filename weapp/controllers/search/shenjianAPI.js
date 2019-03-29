@@ -26,8 +26,8 @@ function getJoke(url,account_id) {//赛事进度
       let options = {
         hostname: url,
         // port: 443,
-        path: '/stock/httpServiceImpl/doStock',
-        method: "POST",
+        path: '/?appid=577908ee0bc7665a8d44f7411613e6e8',
+        method: "GET",
         headers:{ 
           'Content-Type':'application/json',
         //   "Content-Length": Buffer.byteLength(sendData)
@@ -55,7 +55,6 @@ function getJoke(url,account_id) {//赛事进度
     });
     
     // write data to request body
-    req.write(sendData);
     req.end();
   })
 }
@@ -63,13 +62,20 @@ function getJoke(url,account_id) {//赛事进度
 module.exports = {
     
     get: async ctx => {
-    
+        let url = 'api.shenjian.io'
+        console.log(1111111111)
+        var bookinfo =await getJoke(url)
+        // console.log(typeof sss+"22222222222222222222222222222222222222222222222")
+        
+        var sss = JSON.parse(bookinfo)
+        // console.log(sss)
+        ctx.body=sss
     },
     // 信道将信息传输过来的时候
     post: async ctx => {
         let account_id = ctx.request.body.account_id
 
-        let url = 'api.rrjiaoyi.com'
+        let url = 'https://api.shenjian.io'
         console.log(1111111111)
         var bookinfo =await getJoke(url,account_id)
         // console.log(typeof sss+"22222222222222222222222222222222222222222222222")

@@ -5,22 +5,23 @@ const mysql = require('../../tools/sql');
 
 
 
-function getJoke(url,account_id) {//赛事进度
+function getJoke(url,page) {//最新调仓
   return new Promise((reslove, reject) => {
-      // console.log("111111111111111111111111111")
-    var sendinfo=
-    { 
-        "header" : { 
-                    "action" : "S066", 
-                    "code" : "0", 
-                    "devicetype" : "java", 
-                    "msgtype" : 0, 
-                    "sendingtime" : "2016-09-26 14:46:06.090", 
-                    "version" : "1.0.01"						
-            },
-                                
-                "analog_stock_account_id": account_id
-        }
+    // console.log("111111111111111111111111111")
+    var sendinfo={                          
+      //设置要请求的参数
+      "header":{
+        "action":"S042",
+        "code":"0",
+        "devicetype":"0",
+        "msgtype":0,
+        "sendingtime":"2016-09-27 10:39:12.744",
+        "version":"1.0.1",
+        "page":{"index":page,"size":"10"}
+      },
+      "profitType":"",
+      "style_id":"4"
+    }
     // console.log(sendinfo)
     var sendData = JSON.stringify(sendinfo);   //对参数编号处理
       let options = {
@@ -67,14 +68,15 @@ module.exports = {
     },
     // 信道将信息传输过来的时候
     post: async ctx => {
-        let account_id = ctx.request.body.account_id
+        let page = ctx.request.body.page
 
         let url = 'api.rrjiaoyi.com'
         console.log(1111111111)
-        var bookinfo =await getJoke(url,account_id)
+        var bookinfo =await getJoke(url,page)
         // console.log(typeof sss+"22222222222222222222222222222222222222222222222")
-        // console.log(bookinfo)
+        console.log(bookinfo)
         var sss = JSON.parse(bookinfo)
+        console.log(sss)
         ctx.body=sss
         
         

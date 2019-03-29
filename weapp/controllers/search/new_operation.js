@@ -5,19 +5,19 @@ const mysql = require('../../tools/sql');
 
 
 
-function getJoke(url,userId,account_id) {
+function getJoke(url,userId,account_id) {//最新调仓
   return new Promise((reslove, reject) => {
       // console.log("111111111111111111111111111")
     var sendinfo={                          
         //设置要请求的参数
         "header":{
-			"action":"S012",
-			"code":"0",
-			"devicetype":"java",
-			"msgtype":0,
-			"sendingtime":"2016-12-09 16:25:16.354",
-			"version":"1.0.01"
-		},
+                "action":"S012",
+                "code":"0",
+                "devicetype":"java",
+                "msgtype":0,
+                "sendingtime":"2016-12-09 16:25:16.354",
+                "version":"1.0.01"
+              },
 		"userId":userId,
 		"analog_stock_account_id":account_id	
     }
@@ -67,10 +67,10 @@ module.exports = {
     },
     // 信道将信息传输过来的时候
     post: async ctx => {
-        let userId = ctx.request.body.userId
+        let userId = ctx.request.body.user_id
         let account_id = ctx.request.body.account_id
 
-        let url = '47.96.107.128'
+        let url = 'api.rrjiaoyi.com'
         console.log(1111111111)
         var bookinfo =await getJoke(url,userId,account_id)
         // console.log(typeof sss+"22222222222222222222222222222222222222222222222")

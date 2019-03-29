@@ -15,19 +15,24 @@ module.exports =  {
     var group = await userModer.selectGroupWithId(group_id)
     console.log(group[0].member.indexOf(user[0].user_id))
     var MyDate = new Date()
-    if(MyDate.getHours()<10&&MyDate.getMinutes<10){
-        MyDate = '0'+MyDate.getHours().toString()+":0"+MyDate.getMinutes()
-        console.log(MyDate)
-    }else if(MyDate.getHours()<10){
-        MyDate = '0'+MyDate.getHours().toString()+":"+MyDate.getMinutes()
-        console.log(MyDate)
-    }else if(MyDate.getMinutes()<10){
-        MyDate = MyDate.getHours().toString()+":0"+MyDate.getMinutes()
-        console.log(MyDate)
-    }else{
-        MyDate = MyDate.getHours().toString()+":"+MyDate.getMinutes()
-        console.log(MyDate)
-    }
+    // if(MyDate.getHours()<10&&MyDate.getMinutes<10){
+    //     MyDate = '0'+MyDate.getHours().toString()+":0"+MyDate.getMinutes()
+    //     console.log(MyDate)
+    // }else if(MyDate.getHours()<10){
+    //     MyDate = '0'+MyDate.getHours().toString()+":"+MyDate.getMinutes()
+    //     console.log(MyDate)
+    // }else if(MyDate.getMinutes()<10){
+    //     MyDate = MyDate.getHours().toString()+":0"+MyDate.getMinutes()
+    //     console.log(MyDate)
+    // }else{
+    //     MyDate = MyDate.getHours().toString()+":"+MyDate.getMinutes()
+    //     console.log(MyDate)
+    // }
+        var year = MyDate.getFullYear()
+        var month = MyDate.getMonth()+1
+        var day = MyDate.getDate()
+
+        var date = year+"-"+month+"-"+day
     
     if(group[0].member.indexOf(user[0].user_id)==-1){
         ctx.body={
@@ -40,8 +45,8 @@ module.exports =  {
             msg:'输入不可为空'
         }
     }else{
-        userModer.insertGroup_record([user[0].user_id,user[0].user_name,group_id,content,"normal",new Date()])
-        ctx.body={
+        userModer.insertGroup_record([user[0].user_id,user[0].user_name,group_id,content,"normal",new Date(),date,user[0].head_img])
+        ctx.body={ 
             code:0,
             msg:'发言成功'
         }

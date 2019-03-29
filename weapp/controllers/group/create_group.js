@@ -22,36 +22,37 @@ module.exports =  {
   post: async ctx => {
     let openid_create = ctx.request.body.openid_create
     let openid_invited = ctx.request.body.openid_invited
-    let group_id = ctx.request.body.group_id
+
+
+    var MyDate = new Date()
+    var year = MyDate.getFullYear()
+    var month = MyDate.getMonth()+1
+    var day = MyDate.getDate()
+
+    var date = year+"-"+month+"-"+day
+
+    var create = await userModer.selectFromOpenId(openid_create) //创建者用户信息
+    var invited = await userModer.selectFromOpenId(openid_invited) //被邀请者用户信息
     
-    if(namegroup(openid_create,openid_invited)!=false){
-    var create = await userModer.selectFromOpenId(openid_create)
-    var invited = await userModer.selectFromOpenId(openid_invited)
     
     var create_num = create[0].user_id
     var create_groups = create[0].groups
-
-    //检查用户是否创建过群组
-    var crea = await userModer.selectGroupFromCreate(create_num)
-    
+    var create_times = create[0].times
 
     var invited_num = invited[0].user_id
     var invited_times = invited[0].times
     var invited_groups = invited[0].groups
 
-    console.log("invited_num=========",invited_num)
-    console.log("invited_times=====",invited_times)
-    var member = String(create_num).concat(",",String(invited_num))
-    // var Name = await userModer.selectNameinGroup()
-    // let o = [];
-    // for(let i in Name){
-    //     o[i] = Name[i].group_name;
-    //     console.log(o[i])
-    // }
+    if(namegroup(openid_create,openid_invited)!=false){
 
-    if(crea.length==0&&group_id==""){//如果用户没有创建过群组
-        group_name = create[0].user_name+'的股友圈'
-        await userModer.insertGroups([group_name,create_num+invited_num,4,member,create_num])
+    //检查用户是否创建过群组
+    var crea = await userModer.selectGroupFromCreate(create_num)
+
+    var member = String(create_num).concat(",",String(invited_num))
+
+    if(crea.length==0){//如果用户没有创建过群组
+        group_name = create[0].user_name
+        await userModer.insertGroups([group_name,4-create_times+invited_times,4,member,create_num])
         
         ctx.body={
             code:0,
@@ -63,32 +64,25 @@ module.exports =  {
     console.log(group[0].group_id)
     // await userModer.updateUser([])
 
-    if(create_groups==null||create_groups==""){
+
+    if(create_groups==null||create_groups==""){//用户没有创建过群组而且没有群组的情况
         await userModer.updateUser([group[0].group_id,create_num])
-    }else if(create_groups.length>=1){
+    }else if(create_groups.length>=1){//用户有群组但自己未创建过群组的情况
         await userModer.updateUser([create_groups+","+group[0].group_id,create_num])
     }
     
-    if(invited_groups==null||invited_groups==""){
+    if(invited_groups==null||invited_groups==""){//被邀请用户没有群组的情况
         await userModer.updateUser([group[0].group_id,invited_num])
-    }else if(invited_groups.length>=1){
+    }else if(invited_groups.length>=1){//被邀请用户有群组的情况
         await userModer.updateUser([invited_groups+","+group[0].group_id,invited_num])
     }
-}else{//用户创建过群组情况
-    var create = await userModer.selectFromOpenId(openid_create) //创建者用户信息
-    
-    var invited = await userModer.selectFromOpenId(openid_invited) //被邀请者用户信息
-    
-    var create_num = create[0].user_id    //创建者用户id
-    var create_times = create[0].times    //创建者可用测股次数
-    console.log("create_num=======",create_num)
-    console.log("create_times=====",create_times)
-    
-    var group = await userModer.selectGroupAndUserid([create_num,group_id])  //根据创建者用户id和群组名字获取群组信息
 
-    var mem = JSON.stringify(group[0].member)
+    
 
-    if(group.length==0){
+}else{//用户创建过群组情况(邀请进群行为)
+    var mem = JSON.stringify(crea[0].member)
+
+    if(crea.length==0){
         ctx.body={
             code:-1,
             msg:'该用户不是群主'
@@ -96,7 +90,7 @@ module.exports =  {
         return false
     }
 
-    var memb = group[0].member  //群组成员
+    var memb = crea[0].member  //群组成员
     if(memb.length>=10){
         ctx.body={
             code:-1,
@@ -104,11 +98,6 @@ module.exports =  {
         }
         return false;
     }
-
-    
-    var invited_num = invited[0].user_id //被邀请用户的用户id
-    var invited_times = invited[0].times
-    var invited_groups = invited[0].groups
     
     if(mem.indexOf(invited_num)!=-1){//判断用户是否已经在群组中  code为-1时说明用户在群组中可被邀请
         ctx.body={
@@ -118,24 +107,38 @@ module.exports =  {
         return false
     }
 
-    var test_all = group[0].test_all //群组中总的测股次数
-    var test = group[0].test    //群组中可用的测股次数
+    var test_all = crea[0].test_all //群组中总的测股次数
+    var test = crea[0].test    //群组中可用的测股次数
     var member = memb.concat(",",invited_num)
 
-   
+    var cre= await userModer.selectRecordsWithDay([create_num,date])//查询用户今日测股数据
 
-    await userModer.updateGroups([test+invited_times,test_all+2,member,group[0].group_id]).then(result=>{
+    if(cre.length>0){
+        if(cre[0].group_id.indexOf(",")==-1){
+
+        }
+        
+    }
+
+    await userModer.updateGroups([test+2-invited_times,test_all+2,member,crea[0].group_id]).then(result=>{
         ctx.body={
             code:0,
             msg:'成功邀请用户进群'
         }
     })
     if(invited_groups==null||invited_groups==""){
-            await userModer.updateUser([group[0].group_id,invited_num])
+            await userModer.updateUser([crea[0].group_id,invited_num])
         }else{
-            await userModer.updateUser([invited_groups+","+group[0].group_id,invited_num])
+            await userModer.updateUser([invited_groups+","+crea[0].group_id,invited_num])
         }
 }
+
+//当用户调用该接口时，为用户所有的群同步信息
+var user = await userModer.selectFromOpenId(openid_create)
+await userModer.updateGroup_idInRecord([user[0].groups,user[0].user_id])
+
+var user_invited = await userModer.selectFromOpenId(openid_invited)
+await userModer.updateGroup_idInRecord([user_invited[0].groups,user_invited[0].user_id])
 
     }
   }
